@@ -1,5 +1,6 @@
 const main = async () => {
   const gameContractFactory = await hre.ethers.getContractFactory("MyEpicGame");
+
   const gameContract = await gameContractFactory.deploy(
     ["Leo", "Aang", "Pikachu"],
     [
@@ -14,35 +15,33 @@ const main = async () => {
     10000,
     50
   );
+
   await gameContract.deployed();
   console.log("Contract deployed to:", gameContract.address);
 
   let txn;
-  txn = await gameContract.mintCharacterNFT(0);
-  await txn.wait();
-  console.log("Minted NFT #1");
-
-  txn = await gameContract.mintCharacterNFT(1);
-  await txn.wait();
-  console.log("Minted NFT #2");
-
+  // We only have three characters.
+  // an NFT w/ the character at index 2 of our array.
   txn = await gameContract.mintCharacterNFT(2);
   await txn.wait();
-  console.log("Minted NFT #3");
 
   txn = await gameContract.attackBoss();
   await txn.wait();
+
   txn = await gameContract.attackBoss();
   await txn.wait();
 
-  console.log("Done deploying and minting!");
+  console.log("Done!");
 };
 
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
-main()
-  .then(() => process.exit(0))
-  .catch((error) => {
-    console.error(error);
+const runMain = async () => {
+  try {
+    await main();
+    process.exit(0);
+  } catch (error) {
+    console.log(error);
     process.exit(1);
-  });
+  }
+};
+
+runMain();
